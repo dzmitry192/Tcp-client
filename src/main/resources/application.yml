@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: tcp-client
+
+server:
+  port: 9990
+
+tcp:
+  server:
+    host: isit.my.to
+    port: 6998
+
+logging:
+  level:
+    org.springframework.integration.ip.tcp: DEBUG
