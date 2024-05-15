@@ -1,4 +1,4 @@
-package com.tcpclient.model;
+package com.tcpclient.model.xml;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;

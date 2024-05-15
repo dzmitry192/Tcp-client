@@ -1,9 +1,13 @@
 package com.tcpclient.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.tcpclient.config.deserializer.CustomDeserializer;
 import com.tcpclient.config.mapper.XmlMapperConfig;
-import com.tcpclient.model.XmlCs;
+import com.tcpclient.model.entity.EventEntity;
+import com.tcpclient.model.xml.Msg;
+import com.tcpclient.model.xml.XmlCs;
+import com.tcpclient.service.EventServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +18,9 @@ import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.ip.dsl.Tcp;
 import org.springframework.integration.ip.tcp.TcpReceivingChannelAdapter;
 import org.springframework.integration.ip.tcp.connection.*;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 @Configuration
 @EnableIntegration
@@ -26,8 +33,9 @@ public class TcpClientConfig {
     @Value(value = "${tcp.server.port}")
     private Integer port;
 
+    private final EventServiceImpl eventService;
+
     private String receivedMessage = "";
-    private int cntMessages = 1;
 
     @Bean
     public IntegrationFlow integrationFlow() {
@@ -54,9 +62,7 @@ public class TcpClientConfig {
 
     @EventListener(TcpConnectionCloseEvent.class)
     private void socketClosedEvent() throws JsonProcessingException {
-        System.out.println("Message" + cntMessages + ": " + receivedMessage);
-        XmlCs xmlCs = XmlMapperConfig.getXmlMapper().readValue(receivedMessage + "</xml_cs>", XmlCs.class);
-        System.out.println("Received object number " + cntMessages++ + ": "  + xmlCs.toString());
+        eventService.saveEvent(receivedMessage + "</xml_cs>");
         receivedMessage = "";
     }
 }

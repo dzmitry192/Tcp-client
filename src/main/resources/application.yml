@@ -2,8 +2,13 @@ spring:
   application:
     name: tcp-client
 
-server:
-  port: 9990
+  datasource:
+    url: jdbc:mysql://localhost:3306/testdb
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
 
 tcp:
   server:
